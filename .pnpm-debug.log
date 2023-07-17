@@ -1,0 +1,12 @@
+{
+  "0 debug pnpm:scope": {
+    "selected": 1
+  },
+  "1 error pnpm": {
+    "err": {
+      "name": "pnpm",
+      "message": "Cannot read properties of undefined (reading '.')",
+      "stack": "pnpm: Cannot read properties of undefined (reading '.')\n    at dependenciesHierarchyForPackage (/home/eguneys/.config/yarn/global/node_modules/pnpm/dist/pnpm.cjs:181401:37)\n    at /home/eguneys/.config/yarn/global/node_modules/pnpm/dist/pnpm.cjs:181391:17\n    at Array.map (<anonymous>)\n    at dependenciesHierarchy (/home/eguneys/.config/yarn/global/node_modules/pnpm/dist/pnpm.cjs:181388:39)\n    at async default_1 (/home/eguneys/.config/yarn/global/node_modules/pnpm/dist/pnpm.cjs:182042:16)\n    at async /home/eguneys/.config/yarn/global/node_modules/pnpm/dist/pnpm.cjs:192593:21\n    at async run (/home/eguneys/.config/yarn/global/node_modules/pnpm/dist/pnpm.cjs:192567:34)\n    at async runPnpm (/home/eguneys/.config/yarn/global/node_modules/pnpm/dist/pnpm.cjs:192785:5)\n    at async /home/eguneys/.config/yarn/global/node_modules/pnpm/dist/pnpm.cjs:192777:7"
+    }
+  }
+}
