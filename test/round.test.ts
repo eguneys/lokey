@@ -11,7 +11,8 @@ it('draws side', () => {
 
   expect(r.fen).toBe(`ra |  r2r4r5r6r7r8r9rtrjrqrkrar2r3W / >r3r4r5r6r7r8r9rtrjrqrkgag2g3g4W /  g5g6g7g8g9gtgjgqgkgag2g3g4g5W /  g6g7g8g9gtgjgqgkbab2b3b4b5b6W $ ff`)
 
-
+  expect(events.pov(1).map(_ => _.fen)).toStrictEqual(['s 2 r3', 'c 2 >'])
+  expect(events.pov(2).map(_ => _.fen)).toStrictEqual(['s 1 r3', 'c 1 >'])
 
 })
 

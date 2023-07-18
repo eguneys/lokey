@@ -245,16 +245,23 @@ export class DuzOkey4 {
         let dt
         if (tas === 's') {
           dt = this.stacks[previous_action_side - 1].waste.splice(0, 1)[0]
+          events.all(this.draw_side(action_side, dt))
         } else {
           dt = this.middle.splice(0, 1)[0]
+          events.all(this.draw(action_side, dt))
         }
 
-        events.all(this.draw(action_side, dt))
         events.all(this.change_state(action_side, '>'))
       } break
     }
 
     return events
+  }
+
+
+  private draw_side(side: Side, tas: Tas) {
+    this.stacks[side - 1].draw_tas(tas)
+    return new DrawSideTas(side, tas)
   }
 
   private draw(side: Side, tas: Tas) {
@@ -284,6 +291,20 @@ export abstract class Event {
     abstract pov(pov: Side): Event
 }
 
+
+export class DrawSideTas extends Event {
+
+  constructor(readonly side: Side, readonly tas?: Tas) { super() }
+
+  pov(pov: Side) {
+    return new DrawSideTas(pov_side(pov, this.side), this.tas)
+  }
+
+  get fen() {
+    let tas = this.tas ? ` ${this.tas}` : ''
+    return `s ${this.side}${tas}`
+  }
+}
 export class DrawTas extends Event {
 
   constructor(readonly side: Side, readonly tas?: Tas) { super() }
