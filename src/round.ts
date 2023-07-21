@@ -4,6 +4,8 @@ export type DuzState = string
 
 export type Side = 1 | 2 | 3 | 4
 
+export const sides: Side[] = [1, 2, 3, 4]
+
 export function pov_side(pov: Side, side: Side): Side {
   let res = (side - pov + 1)
   if (res < 1) {
