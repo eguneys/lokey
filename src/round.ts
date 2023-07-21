@@ -1,8 +1,8 @@
 import { fake, Tas, make_deal, tas_split } from './deal'
 
-type DuzState = string
+export type DuzState = string
 
-type Side = 1 | 2 | 3 | 4
+export type Side = 1 | 2 | 3 | 4
 
 export function pov_side(pov: Side, side: Side): Side {
   let res = (side - pov + 1)
@@ -416,7 +416,7 @@ export class Events {
   }
 
   pov(s: Side) {
-    return this.events.get(s)
+    return this.events.get(s)!
   }
 
   get spec() {
