@@ -114,12 +114,34 @@ export class Dests {
   }
 }
 
+function sum(a: number[]) {
+  return a.reduce((a, b) => a + b, 0)
+}
+
 export class DuzOkey4Pov {
 
   constructor(
     public okey: Tas,
     public stacks: DuzStack[],
     public end_tas?: Tas) {}
+
+  get nb_middle() {
+    let nb_wastes = sum(this.stacks.map(_ => _.waste.length))
+    let action_state = this.stacks[this.action_side - 1].state
+
+    let nb_boards = 14 * 4
+
+    if (action_state === '<') {
+    } else if (action_state === '>') {
+      nb_boards += 1
+    }
+
+    return 106 - nb_wastes - nb_boards
+  }
+
+  get action_side() {
+    return (this.stacks.findIndex(_ => _.state !== ' ') + 1) as Side
+  }
 
   get fen() {
 
