@@ -57,11 +57,20 @@ export class DuzStack {
     return `${state}${board.join('')}W${waste.join('')}`
   }
 
+  get clone() {
+    return new DuzStack(
+      this.state,
+      this.board.slice(0),
+      this.waste.slice(0)
+    )
+
+  }
+
   get hide_board() {
     return new DuzStack(
       this.state,
       [],
-      this.waste)
+      this.waste.slice(0))
   }
 
   draw_tas(tas: Tas) {
@@ -116,6 +125,39 @@ export class DuzOkey4Pov {
 
     let end = end_tas ? ` .${end_tas}` : ''
     return `${okey} | ${stacks.map(_ => _.fen).join(' / ')}${end}`
+  }
+
+
+  patch_change_state(side: Side, state: DuzState) {
+    this.stacks[side - 1].state = state
+  }
+
+  patch_out_tas(side: Side, tas: Tas) {
+    let i = this.stacks[side - 1].board.indexOf(tas)
+    if (i !== -1) {
+      this.stacks[side - 1].board.splice(i, 1)
+    }
+    this.stacks[side - 1].waste.push(tas)
+  }
+
+  patch_end_tas(side: Side, tas: Tas) {
+    let i = this.stacks[side - 1].board.indexOf(tas)
+    if (i !== -1) {
+      this.stacks[side - 1].board.splice(i, 1)
+    }
+    this.end_tas = tas
+  }
+
+  patch_draw_tas(side: Side, tas?: Tas) {
+    if (tas) {
+      this.stacks[side - 1].board.unshift(tas)
+    }
+  }
+
+  patch_draw_side_tas(side: Side) {
+    let side_side = prev_side(side)
+    let tas = this.stacks[side_side - 1].waste.pop()!
+    this.stacks[side - 1].board.unshift(tas)
   }
 }
 
@@ -206,7 +248,7 @@ export class DuzOkey4 {
     }
 
     return new DuzOkey4Pov(okey,
-                       pov_stacks.map((_, i) => i === 0 ? _ : _.hide_board),
+                       pov_stacks.map((_, i) => i === 0 ? _.clone : _.hide_board),
                           end_tas)
   }
 
@@ -289,6 +331,8 @@ export class DuzOkey4 {
 
 export abstract class Event {
     abstract pov(pov: Side): Event
+
+    abstract patch_pov(pov: DuzOkey4Pov): void
 }
 
 
@@ -298,6 +342,10 @@ export class DrawSideTas extends Event {
 
   pov(pov: Side) {
     return new DrawSideTas(pov_side(pov, this.side), this.tas)
+  }
+
+  patch_pov(pov: DuzOkey4Pov) {
+    pov.patch_draw_side_tas(this.side)
   }
 
   get fen() {
@@ -312,6 +360,10 @@ export class DrawTas extends Event {
   pov(pov: Side) {
     let tas = pov === this.side ? this.tas : undefined
     return new DrawTas(pov_side(pov, this.side), tas)
+  }
+
+  patch_pov(pov: DuzOkey4Pov) {
+    pov.patch_draw_tas(this.side, this.tas)
   }
 
   get fen() {
@@ -329,6 +381,11 @@ export class EndTas extends Event {
     return new EndTas(pov_side(pov, this.side), this.tas)
   }
 
+  patch_pov(pov: DuzOkey4Pov) {
+    pov.patch_end_tas(this.side, this.tas)
+  }
+
+
   get fen() {
     return `e ${this.side} ${this.tas}`
   }
@@ -342,6 +399,11 @@ export class OutTas extends Event {
     return new OutTas(pov_side(pov, this.side), this.tas)
   }
 
+  patch_pov(pov: DuzOkey4Pov) {
+    pov.patch_out_tas(this.side, this.tas)
+  }
+
+
   get fen() {
     return `o ${this.side} ${this.tas}`
   }
@@ -354,6 +416,11 @@ export class ChangeState extends Event {
   pov(pov: Side) {
     return new ChangeState(pov_side(pov, this.side), this.state)
   }
+
+  patch_pov(pov: DuzOkey4Pov) {
+    pov.patch_change_state(this.side, this.state)
+  }
+
 
   get fen() {
     return `c ${this.side} ${this.state}`

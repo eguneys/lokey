@@ -66,6 +66,8 @@ it('first playout draw out acts events pov', () => {
   expect(r.pov(3).fen).toBe(`ra |  g5g6g7g8g9gtgjgqgkgag2g3g4g5W /  W / >W /  W`)
   expect(r.pov(4).fen).toBe(`ra |  g6g7g8g9gtgjgqgkbab2b3b4b5b6W / >W /  W /  W`)
 
+  let povs = [r.pov(1), r.pov(2), r.pov(3), r.pov(4)]
+
   expect(r.dests.fen).toBe('out')
 
   let events = r.act('out r2')
@@ -82,14 +84,33 @@ it('first playout draw out acts events pov', () => {
   expect(events.pov(3).map(_ => _.fen)).toStrictEqual(['o 3 r2', 'c 3  ', 'c 4 <'])
   expect(events.pov(4).map(_ => _.fen)).toStrictEqual(['o 2 r2', 'c 2  ', 'c 3 <'])
 
+
+  let now_povs = [r.pov(1), r.pov(2), r.pov(3), r.pov(4)]
+
+  expect(povs.map((pov, i) => {
+    events.pov(i + 1).forEach(event => event.patch_pov(pov))
+    return pov.fen
+  })).toStrictEqual(now_povs.map(_ => _.fen))
+
+
   expect(r.dests.fen).toBe('draw')
 
+  povs = now_povs
+
   events = r.act('draw')
+
+  now_povs = [r.pov(1), r.pov(2), r.pov(3), r.pov(4)]
 
   expect(r.fen).toBe(`ra |  r3r4r5r6r7r8r9rtrjrqrkrar2r3Wr2 / >b7r4r5r6r7r8r9rtrjrqrkgag2g3g4W /  g5g6g7g8g9gtgjgqgkgag2g3g4g5W /  g6g7g8g9gtgjgqgkbab2b3b4b5b6W $ b8b9btbjbqbkbab2b3b4b5b6b7b8b9btbjbqbklal2l3l4l5l6l7l8l9ltljlqlklal2l3l4l5l6l7l8l9ltljlqlkffff`)
 
   expect(events.pov(1).map(_ => _.fen)).toStrictEqual(['d 2', 'c 2 >'])
   expect(events.pov(2).map(_ => _.fen)).toStrictEqual(['d 1 b7', 'c 1 >'])
+
+
+  expect(povs.map((pov, i) => {
+    events.pov(i + 1).forEach(event => event.patch_pov(pov))
+    return pov.fen
+  })).toStrictEqual(now_povs.map(_ => _.fen))
 
   expect(r.dests.fen).toBe('out')
 })
