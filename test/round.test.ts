@@ -5,6 +5,9 @@ it('draws side', () => {
 
   let r = DuzOkey4.from_fen(`ra |  r2r4r5r6r7r8r9rtrjrqrkrar2r3Wr3 / <r4r5r6r7r8r9rtrjrqrkgag2g3g4W /  g5g6g7g8g9gtgjgqgkgag2g3g4g5W /  g6g7g8g9gtgjgqgkbab2b3b4b5b6W $ ff`)
 
+
+  let povs = [r.pov(1), r.pov(2), r.pov(3), r.pov(4)]
+
   expect(r.dests.fen).toBe('draw')
 
   let events = r.act('draw s')
@@ -14,6 +17,12 @@ it('draws side', () => {
   expect(events.pov(1).map(_ => _.fen)).toStrictEqual(['s 2 r3', 'c 2 >'])
   expect(events.pov(2).map(_ => _.fen)).toStrictEqual(['s 1 r3', 'c 1 >'])
 
+  let now_povs = [r.pov(1), r.pov(2), r.pov(3), r.pov(4)]
+
+  expect(povs.map((pov, i) => {
+    events.pov(i + 1).forEach(event => event.patch_pov(pov))
+    return pov.fen
+  })).toStrictEqual(now_povs.map(_ => _.fen))
 })
 
 it('empties middle', () => {
@@ -83,7 +92,6 @@ it('first playout draw out acts events pov', () => {
   expect(events.pov(2).map(_ => _.fen)).toStrictEqual(['o 4 r2', 'c 4  ', 'c 1 <'])
   expect(events.pov(3).map(_ => _.fen)).toStrictEqual(['o 3 r2', 'c 3  ', 'c 4 <'])
   expect(events.pov(4).map(_ => _.fen)).toStrictEqual(['o 2 r2', 'c 2  ', 'c 3 <'])
-
 
   let now_povs = [r.pov(1), r.pov(2), r.pov(3), r.pov(4)]
 

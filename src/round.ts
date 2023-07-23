@@ -159,7 +159,9 @@ export class DuzOkey4Pov {
   patch_draw_side_tas(side: Side) {
     let side_side = prev_side(side)
     let tas = this.stacks[side_side - 1].waste.pop()!
-    this.stacks[side - 1].board.unshift(tas)
+    if (side === 1) {
+      this.stacks[side - 1].draw_tas(tas)
+    }
   }
 }
 
@@ -288,7 +290,7 @@ export class DuzOkey4 {
 
         let dt
         if (tas === 's') {
-          dt = this.stacks[previous_action_side - 1].waste.splice(0, 1)[0]
+          dt = this.stacks[previous_action_side - 1].waste.pop()
           events.all(this.draw_side(action_side, dt))
         } else {
           dt = this.middle.splice(0, 1)[0]
