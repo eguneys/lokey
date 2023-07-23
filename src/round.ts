@@ -126,6 +126,7 @@ export class DuzOkey4Pov {
     public end_tas?: Tas) {}
 
   get nb_middle() {
+    let nb_okey = 1
     let nb_wastes = sum(this.stacks.map(_ => _.waste.length))
     let action_state = this.stacks[this.action_side - 1].state
 
@@ -136,7 +137,8 @@ export class DuzOkey4Pov {
       nb_boards += 1
     }
 
-    return 106 - nb_wastes - nb_boards
+
+    return 106 - nb_wastes - nb_boards - nb_okey
   }
 
   get action_side() {
@@ -312,7 +314,7 @@ export class DuzOkey4 {
 
         let dt
         if (tas === 's') {
-          dt = this.stacks[previous_action_side - 1].waste.pop()
+          dt = this.stacks[previous_action_side - 1].waste.pop()!
           events.all(this.draw_side(action_side, dt))
         } else {
           dt = this.middle.splice(0, 1)[0]
